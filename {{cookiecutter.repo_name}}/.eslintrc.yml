@@ -1,0 +1,34 @@
+env:
+  browser: true
+  es6: true
+  node: true
+extends: 'eslint:recommended'
+parserOptions:
+  ecmaFeatures:
+    experimentalObjectRestSpread: true
+    jsx: true
+  sourceType: module
+plugins:
+  - react
+rules:
+  no-case-declarations: 0
+  react/jsx-uses-vars:
+      - error
+  react/jsx-uses-react:
+      - error
+  react/jsx-no-undef:
+      - error
+  no-undef: 
+      - error
+  no-unused-vars: 1
+  no-console: 0
+  indent:
+    - warn
+    - 4
+    - SwitchCase: 1
+  linebreak-style:
+    - error
+    - unix
+  semi:
+    - warn
+    - never
