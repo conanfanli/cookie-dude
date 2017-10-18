@@ -13,13 +13,9 @@
     "dev": " webpack-dashboard -- webpack-dev-server --progress --profile --colors"
   },
   "repository": {
-    "type": "git",
-    "url": "https://github.com/reactjs/redux.git"
+    "type": "git"
   },
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/reactjs/redux/issues"
-  },
     "plugins": [
       "transform-class-properties"
     ]
