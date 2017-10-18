@@ -6,7 +6,7 @@ import injectTapEventPlugin from 'react-tap-event-plugin'
 
 
 
-import {App} from './containers/Root'
+import {App} from './containers/App'
 import {configureStore} from './configureStore'
 
 
@@ -28,8 +28,8 @@ const renderIt = (Component, store) => {
 renderIt(App, store)
 
 if (module.hot) {
-    module.hot.accept('./containers/Root', () => {
-        const NextApp = require('./containers/Root').App
+    module.hot.accept('./containers/App', () => {
+        const NextApp = require('./containers/App').App
         renderIt(NextApp, store)
     }
     )
