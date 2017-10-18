@@ -8,7 +8,7 @@ import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import { ConnectedRouter } from 'react-router-redux'
 
-class AppContainer extends React.Component<any, State> {
+class AppContainer extends React.Component<any, any> {
 
     render() {
         return (
@@ -19,15 +19,13 @@ class AppContainer extends React.Component<any, State> {
 }
 
 
-const mapStateToProps = (state: State): {} => {
+const mapStateToProps = (state): {} => {
     return {
-        user: state.user,
-        kind: getKind(state)
     }
 }
 const mapDispatchToProps = (dispatch) => {
     return {
-        actions: bindActionCreators<any>(actionCreators, dispatch),
+        // actions: bindActionCreators<any>(actionCreators, dispatch),
     }
 }
 
@@ -37,6 +35,8 @@ export const Root = connect(
 )(AppContainer)
 
 export const App = ({store, history}) => {
+    return <div></div>
+    /*
     return <Provider store={store}>
         <MuiThemeProvider>
             <ConnectedRouter history={history}>
@@ -44,5 +44,6 @@ export const App = ({store, history}) => {
             </ConnectedRouter>
         </MuiThemeProvider>
     </Provider>
+     */
 }
 
