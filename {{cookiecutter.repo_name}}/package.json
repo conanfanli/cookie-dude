@@ -4,7 +4,7 @@
   "engines": {
     "node": ">=6.6"
   },
-  "description": "{{cookiecuter.description}}",
+  "description": "{{cookiecutter.description}}",
   "scripts": {
     "start": "webpack-dev-server --progress --profile --colors",
     "build": "NODE_ENV=production webpack -p",
@@ -16,10 +16,6 @@
     "type": "git"
   },
   "license": "MIT",
-    "plugins": [
-      "transform-class-properties"
-    ]
-  },
   "dependencies": {
     "caniuse-api": "^1.6.1",
     "create-react-class": "^15.5.3",
