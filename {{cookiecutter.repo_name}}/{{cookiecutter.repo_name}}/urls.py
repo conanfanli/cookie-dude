@@ -16,12 +16,10 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 from django.conf import settings
-from {{cookiecutter.project_name}}.core.views import root
 
 urlpatterns = [
     url(r'^long-secret-string/', admin.site.urls),
     url(r'^api/v1/', include('{{cookiecutter.project_name}}.api.v1.urls', namespace='v1')),
-    url(r'^$', root),
 ]
 
 if settings.DEBUG:
