@@ -1,36 +1,102 @@
 var path = require('path')
 var webpack = require('webpack')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const HappyPack = require('happypack')
+
+const PRODUCTION = process.env.NODE_ENV === 'production'
+
+console.log('Production mode?', PRODUCTION)
+
+const productionEntry = ['./src/index.tsx']
+
+function getPlugins() {
+    const prodOnlyPlugins = [
+        new webpack.DefinePlugin({
+            'process.env': {
+                NODE_ENV: '"production"'
+            }
+        }),
+        new HappyPack({
+            id: 'js',
+            loaders: [
+                'babel-loader',
+            ],
+        }),
+        new webpack.optimize.UglifyJsPlugin({
+            compress: {
+                warnings: false,
+                screw_ie8: true,
+                // drop_console: true,
+                drop_debugger: true
+            }
+        })
+    ]
+    const basePlugins = [
+        new webpack.optimize.OccurrenceOrderPlugin(true),
+
+        new webpack.optimize.CommonsChunkPlugin({
+            name: 'vendor',
+            minChunks: (module) => module.context && module.context.indexOf('node_modules') !== -1,
+        }),
+        new webpack.optimize.CommonsChunkPlugin({
+            name: 'manifest',
+        }),
+        new HtmlWebpackPlugin({
+            template: './src/index.html',
+        }),
+    ]
+    const devOnlyPlugins = [
+        new webpack.HotModuleReplacementPlugin(),
+        new webpack.NamedModulesPlugin(),
+    ]
+    if (PRODUCTION) {
+        return [...prodOnlyPlugins, ...basePlugins]
+    }
+
+    return [...devOnlyPlugins, ...basePlugins]
+}
 
 module.exports = {
-    devtool: 'inline-source-map',
-    entry: [
-        'webpack-hot-middleware/client?path=http://0.0.0.0:3000/' + '__webpack_hmr', // WebpackDevServer host and port
-        'webpack/hot/only-dev-server', // "only" prevents reload on syntax errors
-        './src/index'
-    ],
+    devtool: (!PRODUCTION) ? process.env.WEBPACK_DEVTOOL || 'source-map' : undefined,
+    devServer: (!PRODUCTION) ? {
+        historyApiFallback: true,
+        hotOnly: true,
+        host: '0.0.0.0',
+        hot: true,
+        port: parseInt(process.env.NODE_PORT, 10) || 3000,
+    } : undefined,
+    entry: {
+        main: PRODUCTION ? productionEntry : [
+            'react-hot-loader/patch',
+            './src/index.tsx', // your app's entry point
+        ],
+    },
     output: {
         path: path.join(__dirname, 'dist'),
-        filename: 'bundle.js',
-        publicPath: '/static/'
+        // filename: 'bundle.js',
+        filename: '[name].js',
+        publicPath: '/'
     },
-    plugins: [
-        new webpack.optimize.OccurrenceOrderPlugin(),
-        new webpack.HotModuleReplacementPlugin()
-    ],
+    resolve: {
+        alias: {'@src': path.resolve(__dirname, './src')},
+        extensions: ['.js', '.jsx', '.ts', '.tsx'],
+    },
+    plugins: getPlugins(),
     module: {
-        loaders: [
+        rules: [
             {
-                test: /\.jsx?$/,
-                loaders: ['react-hot', 'babel?presets[]=es2015,presets[]=react'],
+                test: /\.(t|j)sx?$/,
                 exclude: /node_modules/,
-                include: __dirname
+                include: path.resolve(__dirname, './src'),
+                use: PRODUCTION ? [
+                    'happypack/loader?id=js',
+                    'awesome-typescript-loader',
+                ] : [
+                    'react-hot-loader/webpack',
+                    'awesome-typescript-loader',
+                ]
             },
-            {
-                test: /\.json$/,
-                loaders: ['json'],
-                exclude: /node_modules/,
-                include: __dirname
-            }
+            { enforce: "pre", test: /\.js$/, loader: "source-map-loader" }
         ]
     }
 }
