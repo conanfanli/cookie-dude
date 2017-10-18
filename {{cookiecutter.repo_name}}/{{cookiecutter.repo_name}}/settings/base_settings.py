@@ -69,7 +69,6 @@ INSTALLED_APPS = [
 
     'django_extensions',
     'rest_framework',
-    'dynamic_rest',
     'corsheaders',
 
     '{{cookiecutter.project_name}}.core',

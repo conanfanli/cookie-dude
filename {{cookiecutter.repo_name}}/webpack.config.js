@@ -1,7 +1,6 @@
 var path = require('path')
 var webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const HappyPack = require('happypack')
 
 const PRODUCTION = process.env.NODE_ENV === 'production'
 
@@ -15,12 +14,6 @@ function getPlugins() {
             'process.env': {
                 NODE_ENV: '"production"'
             }
-        }),
-        new HappyPack({
-            id: 'js',
-            loaders: [
-                'babel-loader',
-            ],
         }),
         new webpack.optimize.UglifyJsPlugin({
             compress: {
@@ -89,7 +82,6 @@ module.exports = {
                 exclude: /node_modules/,
                 include: path.resolve(__dirname, './src'),
                 use: PRODUCTION ? [
-                    'happypack/loader?id=js',
                     'awesome-typescript-loader',
                 ] : [
                     'react-hot-loader/webpack',
