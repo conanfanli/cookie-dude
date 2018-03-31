@@ -1,2 +1,3 @@
-# redux-cookie
-cookie cutter for redux project
+# Cookie Dude
+pip3 install cookiecutter
+cookiecutter .
