@@ -1,48 +1,29 @@
-.PHONY: restore-db
-restore-db:
-	psql -U postgres {{cookiecutter.project_name}} -c 'drop schema public cascade; create schema public'
-	python manage.py migrate
+SERVICES := web node db
+
+.PHONY: psql
+psql:
+	docker-compose exec db psql -U postgres {{cookiecutter.project_name}}
 
 .PHONY: test
-test:
-	pip install -r requirements.txt
-	python manage.py test
+test: ## Run tests
+	docker-compose exec web pytest $(filter-out $@,$(MAKECMDGOALS))
 
 .PHONY: load-current
 load-current:
-	python manage.py loaddata current
+	docker-compose exec web python manage.py loaddata current
 
 .PHONY: dropschema
 dropschema:
-	psql {{cookiecutter.project_name}} -c 'drop schema public cascade; create schema public'
-
-.PHONY: dump-current
-dump-current:
-	python manage.py dumpdata --indent=2 core -o {{cookiecutter.project_name}}/core/fixtures/current.json
+	docker-compose exec db psql -U postgres {{cookiecutter.project_name}} -c 'drop schema public cascade; create schema public'
 
 .PHONY: dump-live-data
 dump-live-data:
-	DATABASE_URL=$(shell heroku config:get DATABASE_URL) python manage.py dumpdata --indent=2 core -o {{cookiecutter.project_name}}/core/fixtures/current.json
+	DATABASE_URL=$(shell heroku config:get DATABASE_URL --app money-talks) python manage.py dumpdata --indent=2 core -o {{cookiecutter.project_name}}/core/fixtures/current.json
 
 
 .PHONY: start-dev
-start-dev:
-	honcho start -f Procfile.dev
-
-.PHONY: deploy-static
-deploy-static:
-	git branch | grep '* master'
-	git st | grep -o 'working directory clean'
-	git co static-deploy && git pull && git merge master
-	python manage.py collectstatic --no-input
-	npm run build
-	cp -r dist/* staticfiles/
-	rm -r public
-	mv staticfiles public
-	git add public
-	git commit -m 'new deploy'
-	git push
-	git co master
+start-dv:
+	docker-compose up -d && docker-compose logs -f
 
 .PHONY: prod-start
 prod-start:
@@ -51,3 +32,16 @@ prod-start:
 .PHONY: prod-stop
 prod-stop:
 	heroku ps:scale web=0
+
+
+.PHONY: ssh
+ssh: ## Launch a shell inside the container
+	docker-compose exec web bash
+
+.PHONY: ${SERVICES}
+${SERVICES}:
+	docker-compose exec $@ $(filter-out $@,$(MAKECMDGOALS))
+
+.PHONY: lint
+lint:
+	docker-compose exec web mypy .

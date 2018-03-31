@@ -19,7 +19,6 @@ from django.conf import settings
 
 urlpatterns = [
     url(r'^long-secret-string/', admin.site.urls),
-    url(r'^api/v1/', include('{{cookiecutter.project_name}}.api.v1.urls', namespace='v1')),
 ]
 
 if settings.DEBUG:
