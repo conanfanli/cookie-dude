@@ -2,7 +2,7 @@ SERVICES := web node db
 
 .PHONY: psql
 psql:
-	docker-compose exec db psql -U postgres bigshort
+	docker-compose exec db psql -U postgres {{cookiecutter.project_name}}
 
 .PHONY: test
 test: ## Run tests
@@ -14,11 +14,11 @@ load-current:
 
 .PHONY: dropschema
 dropschema:
-	docker-compose exec db psql -U postgres bigshort -c 'drop schema public cascade; create schema public'
+	docker-compose exec db psql -U postgres {{cookiecutter.project_name}} -c 'drop schema public cascade; create schema public'
 
 .PHONY: dump-live-data
 dump-live-data:
-	DATABASE_URL=$(shell heroku config:get DATABASE_URL --app money-talks) python manage.py dumpdata --indent=2 core -o bigshort/core/fixtures/current.json
+	DATABASE_URL=$(shell heroku config:get DATABASE_URL --app money-talks) python manage.py dumpdata --indent=2 core -o {{cookiecutter.project_name}}/core/fixtures/current.json
 
 
 .PHONY: start-dev

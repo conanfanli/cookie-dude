@@ -71,7 +71,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
 
-    'bigshort.core',
+    '{{cookiecutter.project_name}}.core',
 ]
 
 MIDDLEWARE = [
@@ -90,7 +90,7 @@ MIDDLEWARE = [
 
 ]
 
-ROOT_URLCONF = 'bigshort.urls'
+ROOT_URLCONF = '{{cookiecutter.project_name}}.urls'
 
 TEMPLATES = [
     {
@@ -108,26 +108,14 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'bigshort.wsgi.application'
+WSGI_APPLICATION = '{{cookiecutter.project_name}}.wsgi.application'
 
 
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 DATABASES = {
-    'default': dj_database_url.config(default='postgres://postgres:@localhost:5432/bigshort')
+    'default': dj_database_url.config(default='postgres://postgres:@localhost:5432/{{cookiecutter.project_name}}')
 }
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': get_environ('bigshort_DB_NAME', 'bigshort'),
-#         'USER': get_environ('bigshort_DB_USER', 'postgres'),
-#         'PORT': get_environ('bigshort_DB_PORT', ''),
-#         'PASSWORD': get_environ('bigshort_DB_PASSWORD', ''),
-#         'HOST': get_environ('bigshort_DB_HOST', ''),
-#         'CONN_MAX_AGE': int(get_environ('bigshort_CONN_MAX_AGE', 0)),
-#     }
-# }
 
 
 # Password validation
@@ -177,7 +165,7 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'bigshort.authentication.JWTAuthentication',
+        '{{cookiecutter.project_name}}.authentication.JWTAuthentication',
         'rest_framework.authentication.SessionAuthentication',
         # 'rest_framework.authentication.BasicAuthentication',
     )
@@ -216,7 +204,7 @@ LOGGING = {
             'propagate': True,
             'level': 'INFO',
         },
-        'bigshort': {
+        '{{cookiecutter.project_name}}': {
             'handlers': ['console'],
             'propagate': False,
         },

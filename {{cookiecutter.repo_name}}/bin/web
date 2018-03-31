@@ -1,4 +1,4 @@
 #!/bin/bash
 
-python manage.py collectstatic --settings=bigshort.settings.dev_settings --noinput
-python manage.py runserver --settings=bigshort.settings.dev_settings 0.0.0.0:8000
+python manage.py collectstatic --settings={{cookiecutter.project_name}}.settings.dev_settings --noinput
+python manage.py runserver --settings={{cookiecutter.project_name}}.settings.dev_settings 0.0.0.0:8000
