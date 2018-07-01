@@ -12,8 +12,12 @@ def remove(filepath):
 
 
 has_frontend = '{{cookiecutter.has_frontend}}' == 'y'
+use_heroku = '{{cookiecutter.use_heroku}}' == 'y'
 
 FRONTEND_FILES = ["src", "tsconfig.json", "webpack.config.js", "package.json"]
 
 if not has_frontend:
     [remove(f) for f in FRONTEND_FILES]
+
+if not use_heroku:
+    remove("runtime.txt")

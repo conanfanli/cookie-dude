@@ -2,7 +2,7 @@ version: '3'
 
 services:
     db:
-        image: postgres:9.6.5
+        image: postgres:9.6.9
         restart: always
         environment:
             POSTGRES_DB: {{cookiecutter.project_name}}
@@ -22,12 +22,13 @@ services:
             - db
         volumes:
             - .:/code
-    node:
-        build:
-            context: .
-            dockerfile: src/Dockerfile
-        ports:
-            - "3000:3000"
-        volumes:
-            - .:/code
 
+              #     node:
+              #         build:
+              #             context: .
+              #             dockerfile: src/Dockerfile
+              #         ports:
+              #             - "3000:3000"
+              #         volumes:
+              #             - .:/code
+              #
