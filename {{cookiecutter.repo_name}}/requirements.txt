@@ -4,16 +4,17 @@ djangorestframework
 django-extensions
 six
 django-cors-middleware
-honcho
 requests
 djangorestframework-jwt
 uwsgi
 dj-database-url
 mypy
 django-debug-toolbar
+slotomania
 
 
 flake8
+yapf
 ipython
 pytest
 pytest-django

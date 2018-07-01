@@ -1,4 +1,4 @@
-SERVICES := web node db
+SERVICES := web db
 
 .PHONY: psql
 psql:
@@ -16,22 +16,9 @@ load-current:
 dropschema:
 	docker-compose exec db psql -U postgres {{cookiecutter.project_name}} -c 'drop schema public cascade; create schema public'
 
-.PHONY: dump-live-data
-dump-live-data:
-	DATABASE_URL=$(shell heroku config:get DATABASE_URL --app money-talks) python manage.py dumpdata --indent=2 core -o {{cookiecutter.project_name}}/core/fixtures/current.json
-
-
 .PHONY: start-dev
 start-dv:
 	docker-compose up -d && docker-compose logs -f
-
-.PHONY: prod-start
-prod-start:
-	heroku ps:scale web=1
-
-.PHONY: prod-stop
-prod-stop:
-	heroku ps:scale web=0
 
 
 .PHONY: ssh
@@ -45,3 +32,24 @@ ${SERVICES}:
 .PHONY: lint
 lint:
 	docker-compose exec web mypy .
+
+.PHONY: sloto
+sloto:
+	python {{cookiecutter.project_name}}/core/schemas.py
+	prettier src/sloto/index.ts --write
+
+{% if cookiecutter.use_heroku == 'y' %}
+# Heroku section
+.PHONY: prod-start
+prod-start:
+	heroku ps:scale web=1
+
+.PHONY: prod-stop
+prod-stop:
+	heroku ps:scale web=0
+
+.PHONY: dump-live-data
+dump-live-data:
+	DATABASE_URL=$(shell heroku config:get DATABASE_URL --app money-talks) python manage.py dumpdata --indent=2 core -o {{cookiecutter.project_name}}/core/fixtures/current.json
+{% endif %}
+

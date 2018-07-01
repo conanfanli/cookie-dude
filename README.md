@@ -1,3 +1,7 @@
 # Cookie Dude
-pip3 install cookiecutter
+
+For Dev:
+```
+pip3 install cookiecutter yapf flake8
 cookiecutter .
+```
