@@ -16,16 +16,24 @@ function createReducer(initialState, handlers) {
     }
   };
 }
-
 const serverState = createReducer(initialState.serverState, {
   LoadServerState: (serverState, action) => {
     let ret = Object.assign({}, serverState);
     Object.keys(action.serverState).map(path => {
       const target = action.serverState[path];
-      function concat(items) {
-        return [...(items || []), ...target];
+      function concat(old) {
+        // dedupe
+        const items = old || [];
+        return [
+          ...items,
+          ...target.filter((x, index) => {
+            //append the items that do not already exist
+            return !items.find(y => x.id === y.id);
+          })
+        ];
       }
 
+      // e.g.  +resources.Statement.list_of_items: [...]
       if (path.startsWith("+")) {
         ret = u.updateIn(path.slice(1), concat, ret);
       } else if (path.startsWith("-")) {
