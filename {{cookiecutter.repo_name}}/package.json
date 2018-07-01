@@ -1,10 +1,10 @@
 {
   "name": "{{cookiecutter.project_name}}",
-  "version": "{{cookiecutter.version}}",
+  "version": "0.0.1",
   "engines": {
     "node": ">=6.6"
   },
-  "description": "A short description of the project.",
+  "description": "{{cookiecutter.description}}",
   "scripts": {
     "start": "webpack-dev-server --progress --profile --colors",
     "build": "NODE_ENV=production webpack -p",

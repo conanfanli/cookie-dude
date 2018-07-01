@@ -1,9 +1,6 @@
 {
     "project_name": "project_name",
     "repo_name": "{{ cookiecutter.project_name|replace(' ', '')|lower }}",
-    "static_root": "src",
-    "production_output_path": "src/dist",
-    "author_name": "Your Name",
-    "description": "A short description of the project.",
-    "version": "0.1.0"
+    "has_frontend": "y",
+    "description": "A short description of the project."
 }
