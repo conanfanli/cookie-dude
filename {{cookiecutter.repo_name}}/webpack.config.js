@@ -1,78 +1,75 @@
-var path = require('path')
-var webpack = require('webpack')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
+var path = require("path");
+var webpack = require("webpack");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const WebpackCleanupPlugin = require("webpack-cleanup-plugin");
 
-const PRODUCTION = process.env.NODE_ENV === 'production'
+const PRODUCTION = process.env.NODE_ENV === "production";
 
-console.log('Production mode?', PRODUCTION)
+console.log("Production mode?", PRODUCTION);
 
-const productionEntry = ['./src/index.tsx']
+const productionEntry = ["./src/index.tsx"];
 
 function getPlugins() {
-    const prodOnlyPlugins = [
-        new webpack.DefinePlugin({
-            'process.env': {
-                NODE_ENV: '"production"'
-            }
+    return [
+        new webpack.EnvironmentPlugin({
+            NODE_ENV: PRODUCTION ? "production" : "development", // use 'development' unless process.env.NODE_ENV is defined
+            DEBUG: false
         }),
-        new webpack.optimize.UglifyJsPlugin({
-            compress: {
-                warnings: false,
-                screw_ie8: true,
-                // drop_console: true,
-                drop_debugger: true
-            }
-        })
-    ]
-    const basePlugins = [
-        new webpack.optimize.OccurrenceOrderPlugin(true),
-
-        new webpack.optimize.CommonsChunkPlugin({
-            name: 'vendor',
-            minChunks: (module) => module.context && module.context.indexOf('node_modules') !== -1,
-        }),
-        new webpack.optimize.CommonsChunkPlugin({
-            name: 'manifest',
-        }),
+        new WebpackCleanupPlugin(),
         new HtmlWebpackPlugin({
-            template: './src/index.html',
-        }),
-    ]
-    const devOnlyPlugins = [
-        new webpack.HotModuleReplacementPlugin(),
-        new webpack.NamedModulesPlugin(),
-    ]
-    if (PRODUCTION) {
-        return [...prodOnlyPlugins, ...basePlugins]
-    }
-
-    return [...devOnlyPlugins, ...basePlugins]
+            template: "./src/index.html"
+        })
+    ];
 }
 
 module.exports = {
-    devtool: (!PRODUCTION) ? process.env.WEBPACK_DEVTOOL || 'source-map' : undefined,
-    devServer: (!PRODUCTION) ? {
-        historyApiFallback: true,
-        hotOnly: true,
-        host: '0.0.0.0',
-        hot: true,
-        port: parseInt(process.env.NODE_PORT, 10) || 3000,
-    } : undefined,
+    devtool: !PRODUCTION
+        ? process.env.WEBPACK_DEVTOOL || "source-map"
+        : undefined,
+    devServer: !PRODUCTION
+        ? {
+              historyApiFallback: true,
+              hotOnly: true,
+              host: "0.0.0.0",
+              hot: true,
+              port: parseInt(process.env.NODE_PORT, 10) || 3000
+          }
+        : undefined,
     entry: {
-        main: PRODUCTION ? productionEntry : [
-            'react-hot-loader/patch',
-            './src/index.tsx', // your app's entry point
-        ],
+        main: PRODUCTION
+            ? productionEntry
+            : [
+                  "react-hot-loader/patch",
+                  "./src/index.tsx" // your app's entry point
+              ]
     },
     output: {
-        path: path.join(__dirname, 'dist'),
-        // filename: 'bundle.js',
-        filename: '[name].js',
-        publicPath: '/'
+        path: path.join(__dirname, "dist"),
+        filename: "[name].js",
+        // filename: "bundle.js",
+        // chunkFilename: "[chunkhash].js",
+        publicPath: "/"
     },
     resolve: {
-        alias: {'@src': path.resolve(__dirname, './src')},
-        extensions: ['.js', '.jsx', '.ts', '.tsx'],
+        alias: { "@src": path.resolve(__dirname, "./src") },
+        extensions: [".js", ".jsx", ".ts", ".tsx"]
+    },
+    optimization: {
+        splitChunks: {
+            name: true,
+            cacheGroups: {
+                commons: {
+                    chunks: "initial",
+                    minChunks: 2
+                },
+                vendors: {
+                    test: /[\\/]node_modules[\\/]/,
+                    chunks: "all",
+                    priority: -10
+                }
+            }
+        },
+        runtimeChunk: true
     },
     plugins: getPlugins(),
     module: {
@@ -80,15 +77,12 @@ module.exports = {
             {
                 test: /\.(t|j)sx?$/,
                 exclude: /node_modules/,
-                include: path.resolve(__dirname, './src'),
-                use: PRODUCTION ? [
-                    'awesome-typescript-loader',
-                ] : [
-                    'react-hot-loader/webpack',
-                    'awesome-typescript-loader',
-                ]
+                include: path.resolve(__dirname, "./src"),
+                use: PRODUCTION
+                    ? ["awesome-typescript-loader"]
+                    : ["react-hot-loader/webpack", "awesome-typescript-loader"]
             },
             { enforce: "pre", test: /\.js$/, loader: "source-map-loader" }
         ]
     }
-}
+};
