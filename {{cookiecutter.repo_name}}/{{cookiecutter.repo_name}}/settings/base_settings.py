@@ -117,18 +117,6 @@ DATABASES = {
     'default': dj_database_url.config(default='postgres://postgres:@localhost:5432/{{cookiecutter.project_name}}')
 }
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': get_environ('{{cookiecutter.project_name}}_DB_NAME', '{{cookiecutter.project_name}}'),
-#         'USER': get_environ('{{cookiecutter.project_name}}_DB_USER', 'postgres'),
-#         'PORT': get_environ('{{cookiecutter.project_name}}_DB_PORT', ''),
-#         'PASSWORD': get_environ('{{cookiecutter.project_name}}_DB_PASSWORD', ''),
-#         'HOST': get_environ('{{cookiecutter.project_name}}_DB_HOST', ''),
-#         'CONN_MAX_AGE': int(get_environ('{{cookiecutter.project_name}}_CONN_MAX_AGE', 0)),
-#     }
-# }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
