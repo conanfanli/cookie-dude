@@ -6,7 +6,7 @@
   },
   "description": "{{cookiecutter.description}}",
   "scripts": {
-    "start": "webpack-dev-server --progress --profile --colors",
+    "start": "webpack-dev-server --mode development --hot --progress --color --port 3000",
     "build": "NODE_ENV=production webpack -p",
     "test": "jest",
     "test:watch": "npm test -- --watch",
