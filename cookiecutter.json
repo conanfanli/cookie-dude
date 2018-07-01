@@ -1,6 +1,7 @@
 {
     "project_name": "project_name",
     "repo_name": "{{ cookiecutter.project_name|replace(' ', '')|lower }}",
+    "use_heroku": "n",
     "has_frontend": "y",
     "description": "A short description of the project."
 }

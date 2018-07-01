@@ -1,7 +1,8 @@
 import os
 import shutil
 
-print(os.getcwd())  # prints /absolute/path/to/{{cookiecutter.project_slug}}
+print(os.getcwd())
+
 
 def remove(filepath):
     if os.path.isfile(filepath):
@@ -9,8 +10,10 @@ def remove(filepath):
     elif os.path.isdir(filepath):
         shutil.rmtree(filepath)
 
+
 has_frontend = '{{cookiecutter.has_frontend}}' == 'y'
 
+FRONTEND_FILES = ["src", "tsconfig.json", "webpack.config.js", "package.json"]
 
 if not has_frontend:
-    remove("src")
+    [remove(f) for f in FRONTEND_FILES]
