@@ -16,10 +16,6 @@ load-current:
 dropschema:
 	docker-compose exec db psql -U postgres {{cookiecutter.project_name}} -c 'drop schema public cascade; create schema public'
 
-.PHONY: start-dev
-start-dv:
-	docker-compose up -d && docker-compose logs -f
-
 
 .PHONY: ssh
 ssh: ## Launch a shell inside the container
