@@ -1,11 +1,9 @@
 Django
 psycopg2
-djangorestframework
 django-extensions
 six
 django-cors-middleware
 requests
-djangorestframework-jwt
 uwsgi
 dj-database-url
 mypy
@@ -19,3 +17,4 @@ ipython
 pytest
 pytest-django
 pytest-cov
+isort
