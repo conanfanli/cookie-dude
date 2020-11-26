@@ -1,3 +1,5 @@
+{% raw %}
+
 name: Python package
 
 on: [push]
@@ -34,3 +36,5 @@ jobs:
           echo -e "username = __token__" >> .pypirc
           echo -e "password = $PYPI_TOKEN" >> .pypirc
           make publish
+{% endraw %}
+
