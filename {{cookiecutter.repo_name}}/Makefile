@@ -1,4 +1,4 @@
-project := maestro
+project := {{cookiecutter.project_name}}
 
 .PHONY: clean
 clean:
