@@ -19,7 +19,7 @@ coverage: ## Generate a test coverage report based on `manage.py test`
 
 .PHONY: setup
 setup:
-	rm -rf .git/hooks && ln -s $(shell pwd)/git-hooks .git/hooks
+	git init && rm -rf .git/hooks && ln -s $(shell pwd)/git-hooks .git/hooks
 
 .PHONY: publish
 publish: clean
