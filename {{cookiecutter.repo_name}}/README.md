@@ -1,2 +1,2 @@
-# {{cookiecuter.project_name}}
+# {{cookiecutter.project_name}}
 Add docs here
