@@ -1,0 +1,10 @@
+include *requirements.txt
+include *.md
+
+include {{cookiecutter.project_name}}/*.pyi
+recursive-include {{cookiecutter.project_name}} *.pyi
+
+include {{cookiecutter.project_name}}/py.typed
+recursive-include {{cookiecutter.project_name}} py.typed
+
+

@@ -1,51 +1,43 @@
-SERVICES := web db
+project := maestro
 
-.PHONY: psql
-psql:
-	docker-compose exec db psql -U postgres {{cookiecutter.project_name}}
+.PHONY: clean
+clean:
+	@rm -rf dist ${project}.egg-info
+	@rm -rf .cover
+	@rm -f .coverage
 
 .PHONY: test
-test: ## Run tests
-	docker-compose exec web pytest $(filter-out $@,$(MAKECMDGOALS))
+test:
+	PYTHONPATH=. pytest $(filter-out $@,$(MAKECMDGOALS))
 
-.PHONY: load-current
-load-current:
-	docker-compose exec web python manage.py loaddata current
+.PHONY: coverage
+coverage: ## Generate a test coverage report based on `manage.py test`
+	PYTHONPATH=. pytest . --cov=. --cov-report term-missing \
+			   --cov-report html:.cover \
+			   --cov-report xml:./coverage.xml \
+			   --junitxml ./test-reports/xunit.xml
 
-.PHONY: dropschema
-dropschema:
-	docker-compose exec db psql -U postgres {{cookiecutter.project_name}} -c 'drop schema public cascade; create schema public'
+.PHONY: setup
+setup:
+	rm -rf .git/hooks && ln -s $(shell pwd)/git-hooks .git/hooks
 
+.PHONY: publish
+publish: clean
+	python setup.py sdist bdist_wheel
+	twine upload dist/* --config-file .pypirc --skip-existing
 
-.PHONY: ssh
-ssh: ## Launch a shell inside the container
-	docker-compose exec web bash
-
-.PHONY: ${SERVICES}
-${SERVICES}:
-	docker-compose exec $@ $(filter-out $@,$(MAKECMDGOALS))
+.PHONY: generate-stubs
+generate-stubs: clean
+	find . -type f -name '*.pyi' | xargs rm
+	stubgen ${project}/ -o .
 
 .PHONY: lint
 lint:
-	docker-compose exec web mypy .
+	black . --check
+	mypy .
+	isort -c
 
-.PHONY: sloto
-sloto:
-	python {{cookiecutter.project_name}}/core/schemas.py
-	prettier src/sloto/index.ts --write
-
-{% if cookiecutter.use_heroku == 'y' %}
-# Heroku section
-.PHONY: prod-start
-prod-start:
-	heroku ps:scale web=1
-
-.PHONY: prod-stop
-prod-stop:
-	heroku ps:scale web=0
-
-.PHONY: dump-live-data
-dump-live-data:
-	DATABASE_URL=$(shell heroku config:get DATABASE_URL --app money-talks) python manage.py dumpdata --indent=2 core -o {{cookiecutter.project_name}}/core/fixtures/current.json
-{% endif %}
+.PHONY: check-version-bump
+check-version-bump:
+	./check_version_bump.sh
 
